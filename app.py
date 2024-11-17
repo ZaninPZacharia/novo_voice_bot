@@ -4,15 +4,14 @@ import requests
 from gtts import gTTS
 from io import BytesIO
 import base64
-import os  # Import os for environment variables
 
 app = Flask(__name__)
 
 # Enable CORS for the entire Flask app to allow requests from GitHub Pages
 CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})  # Allow CORS from GitHub Pages
 
-# Load API Key securely from environment variables
-API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"  # Ensure you have this in your environment variables or .env file
+# Hardcoded API Key (not recommended for production)
+API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"  # Put your actual API Key here
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def generate_response(prompt):
