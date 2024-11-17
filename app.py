@@ -4,6 +4,7 @@ import requests
 from gtts import gTTS
 from io import BytesIO
 import base64
+import os  # Make sure to import os for environment variables
 
 app = Flask(__name__)
 
@@ -70,4 +71,6 @@ def ask():
     return jsonify({"response": "No question provided."})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Use the environment variable for the port (Render provides it)
+    port = int(os.environ.get("PORT", 5000))  # Use 5000 as fallback
+    app.run(debug=True, host='0.0.0.0', port=port)
