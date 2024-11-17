@@ -8,18 +8,18 @@ import os
 
 app = Flask(__name__)
 
-# Enable CORS for specific origin (GitHub Pages)
+# Enable CORS globally for the Flask app
 CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})
 
 # Manually add CORS headers for OPTIONS preflight requests
 @app.after_request
 def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'  # Allow requests from GitHub Pages
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'  # Allow specific methods
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'  # Allow specific headers
+    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'  # Allow specific origin
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'  # Allow methods
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'  # Allow headers
     return response
 
-# Handle OPTIONS preflight request
+# Handle OPTIONS preflight request explicitly
 @app.route('/ask', methods=['OPTIONS'])
 def options():
     response = jsonify({'message': 'CORS preflight check successful.'})
@@ -28,7 +28,7 @@ def options():
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
 
-# Load API Key securely from environment variables
+# API Key and URL
 API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
@@ -52,7 +52,6 @@ def generate_response(prompt):
         print(f"Error: {e}")
         return "I'm having trouble answering that."
 
-# Helper function to detect educational questions
 def is_educational_question(question):
     educational_keywords = ["how", "what", "why", "explain", "define", "when", "where", "tell me about", "describe"]
     return any(keyword in question.lower() for keyword in educational_keywords)
