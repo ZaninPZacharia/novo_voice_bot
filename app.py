@@ -8,7 +8,7 @@ import base64
 app = Flask(__name__)
 
 # Enable CORS for the entire Flask app to allow requests from GitHub Pages
-CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})  # Allow CORS from GitHub Pages
+CORS(app, resources={r"/ask": {"origins": "https://nova-backend-8lwz.onrender.com"}})  # Allow CORS from GitHub Pages
 
 # Hardcoded API Key (not recommended for production)
 API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"  # Put your actual API Key here
