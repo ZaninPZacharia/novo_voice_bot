@@ -2,13 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from gtts import gTTS
-import os
 from io import BytesIO
+import base64
 
 app = Flask(__name__)
 
 # Enable CORS for the entire Flask app
-CORS(app, resources={r"/ask": {"origins": "http://127.0.0.1:5500"}})
+CORS(app, resources={r"/ask": {"origins": "http://127.0.0.1:5500"}})  # Allow CORS from the frontend
 
 # API Key and URL for Gemini AI
 API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"
@@ -55,14 +55,18 @@ def ask():
             response_text = generate_response(question)
         else:
             response_text = "I am designed for educational purposes only."
-
-        # Convert response to speech and send back as an audio file
+        
+        # Convert response text to speech using gTTS
         audio = gTTS(response_text, lang='en')
         audio_fp = BytesIO()
-        audio.save(audio_fp)
-        audio_fp.seek(0)  # Move pointer to the start of the file-like object
-        return jsonify({"response": response_text, "audio": audio_fp.getvalue().decode('latin1')})
+        audio.write_to_fp(audio_fp)  # Write directly to the BytesIO object
+        audio_fp.seek(0)  # Reset pointer to the start of the file-like object
 
+        # Encode the audio in base64 for sending over HTTP
+        audio_base64 = base64.b64encode(audio_fp.read()).decode('utf-8')
+
+        return jsonify({"response": response_text, "audio": audio_base64})
+    
     return jsonify({"response": "No question provided."})
 
 if __name__ == "__main__":
