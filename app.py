@@ -40,6 +40,10 @@ def is_educational_question(question):
     educational_keywords = ["how", "what", "why", "explain", "define", "when", "where", "tell me about", "describe"]
     return any(keyword in question.lower() for keyword in educational_keywords)
 
+@app.route("/")
+def home():
+    return "Nova is live! Welcome to the educational assistant."
+
 @app.route("/ask", methods=["POST"])
 def ask():
     question = request.json.get("question")
