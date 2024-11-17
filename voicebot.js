@@ -85,8 +85,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // This function captures voice input using the Web Speech API
     async function getVoiceInput() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = "en-US";
             recognition.start();
@@ -98,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             recognition.onerror = (event) => {
                 console.error("Speech recognition error", event.error);
-                resolve(null);
+                reject("Error occurred while recognizing speech.");
             };
         });
     }
