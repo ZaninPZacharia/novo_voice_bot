@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})  # Allow CORS from GitHub Pages
 
 # Load API Key securely from environment variables
-API_KEY = os.getenv("GEMINI_API_KEY")  # Ensure you have this in your environment variables or .env file
+API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"  # Ensure you have this in your environment variables or .env file
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def generate_response(prompt):
