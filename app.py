@@ -14,15 +14,18 @@ CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})
 # Manually add CORS headers for OPTIONS preflight requests
 @app.after_request
 def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'  # Allow requests from GitHub Pages
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'  # Allow specific methods
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'  # Allow specific headers
     return response
 
 # Handle OPTIONS preflight request
 @app.route('/ask', methods=['OPTIONS'])
 def options():
     response = jsonify({'message': 'CORS preflight check successful.'})
+    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
 
 # Load API Key securely from environment variables
