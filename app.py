@@ -4,13 +4,28 @@ import requests
 from gtts import gTTS
 from io import BytesIO
 import base64
+import os
 
 app = Flask(__name__)
 
-# Allow CORS for all origins or just for the specific GitHub Pages domain
+# Enable CORS for specific origin (GitHub Pages)
 CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})
 
-# Hardcoded API Key (not recommended for production)
+# Manually add CORS headers for OPTIONS preflight requests
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
+
+# Handle OPTIONS preflight request
+@app.route('/ask', methods=['OPTIONS'])
+def options():
+    response = jsonify({'message': 'CORS preflight check successful.'})
+    return response
+
+# Load API Key securely from environment variables
 API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
