@@ -29,7 +29,7 @@ def options():
     return response
 
 # API Key and URL
-API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"
+API_KEY = "YOUR_API_KEY_HERE"
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def generate_response(prompt):
@@ -55,10 +55,6 @@ def generate_response(prompt):
 def is_educational_question(question):
     educational_keywords = ["how", "what", "why", "explain", "define", "when", "where", "tell me about", "describe"]
     return any(keyword in question.lower() for keyword in educational_keywords)
-
-@app.route("/")
-def home():
-    return "Nova is live! Welcome to the educational assistant."
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -91,5 +87,4 @@ def ask():
     return jsonify({"response": "No question provided."})
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use 5000 as fallback
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=5000)  # Run Flask app
