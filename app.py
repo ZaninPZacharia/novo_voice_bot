@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-import pyttsx3
+from gtts import gTTS
+import os
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -11,9 +13,6 @@ CORS(app, resources={r"/ask": {"origins": "http://127.0.0.1:5500"}})
 # API Key and URL for Gemini AI
 API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
-
-# Initialize text-to-speech engine
-engine = pyttsx3.init()
 
 def generate_response(prompt):
     headers = {"Content-Type": "application/json"}
@@ -56,9 +55,14 @@ def ask():
             response_text = generate_response(question)
         else:
             response_text = "I am designed for educational purposes only."
-        
-        return jsonify({"response": response_text})
-    
+
+        # Convert response to speech and send back as an audio file
+        audio = gTTS(response_text, lang='en')
+        audio_fp = BytesIO()
+        audio.save(audio_fp)
+        audio_fp.seek(0)  # Move pointer to the start of the file-like object
+        return jsonify({"response": response_text, "audio": audio_fp.getvalue().decode('latin1')})
+
     return jsonify({"response": "No question provided."})
 
 if __name__ == "__main__":
