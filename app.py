@@ -7,11 +7,11 @@ import base64
 
 app = Flask(__name__)
 
-# Enable CORS for the entire Flask app to allow requests from GitHub Pages
-CORS(app, resources={r"/ask": {"origins": "https://nova-backend-8lwz.onrender.com"}})  # Allow CORS from GitHub Pages
+# Allow CORS for all origins or just for the specific GitHub Pages domain
+CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})
 
 # Hardcoded API Key (not recommended for production)
-API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"  # Put your actual API Key here
+API_KEY = "AIzaSyD6M7Y7jROPSx5-MOx3keGugRI-ehIpQME"
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def generate_response(prompt):
@@ -74,6 +74,5 @@ def ask():
     return jsonify({"response": "No question provided."})
 
 if __name__ == "__main__":
-    # Use the environment variable for the port (Render provides it)
     port = int(os.environ.get("PORT", 5000))  # Use 5000 as fallback
     app.run(debug=True, host='0.0.0.0', port=port)
