@@ -4,32 +4,15 @@ import requests
 from gtts import gTTS
 from io import BytesIO
 import base64
-import os
+import os  # Import os for environment variables
 
 app = Flask(__name__)
 
-# Enable CORS globally for the Flask app
-CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})
+# Enable CORS for the entire Flask app to allow requests from GitHub Pages
+CORS(app, resources={r"/ask": {"origins": "https://zaninpzacharia.github.io"}})  # Allow CORS from GitHub Pages
 
-# Manually add CORS headers for OPTIONS preflight requests
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'  # Allow specific origin
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'  # Allow methods
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'  # Allow headers
-    return response
-
-# Handle OPTIONS preflight request explicitly
-@app.route('/ask', methods=['OPTIONS'])
-def options():
-    response = jsonify({'message': 'CORS preflight check successful.'})
-    response.headers['Access-Control-Allow-Origin'] = 'https://zaninpzacharia.github.io'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-    return response
-
-# API Key and URL
-API_KEY = "YOUR_API_KEY_HERE"
+# Load API Key securely from environment variables
+API_KEY = os.getenv("GEMINI_API_KEY")  # Ensure you have this in your environment variables or .env file
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
 def generate_response(prompt):
@@ -52,9 +35,14 @@ def generate_response(prompt):
         print(f"Error: {e}")
         return "I'm having trouble answering that."
 
+# Helper function to detect educational questions
 def is_educational_question(question):
     educational_keywords = ["how", "what", "why", "explain", "define", "when", "where", "tell me about", "describe"]
     return any(keyword in question.lower() for keyword in educational_keywords)
+
+@app.route("/")
+def home():
+    return "Nova is live! Welcome to the educational assistant."
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -87,4 +75,6 @@ def ask():
     return jsonify({"response": "No question provided."})
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)  # Run Flask app
+    # Use the environment variable for the port (Render provides it)
+    port = int(os.environ.get("PORT", 5000))  # Use 5000 as fallback
+    app.run(debug=True, host='0.0.0.0', port=port)
